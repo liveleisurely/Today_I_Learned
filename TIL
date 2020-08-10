@@ -1,0 +1,17 @@
+# Today_I_Learned
+First_step for development
+
+# 200807
+-- 수업내용--
+R의 제어문과 함수
+산술연산자, 관계연산자, if, else, ifelse, switch, which
+
+# 200810
+setwd('./디렉토리주소')
+. 한번쓰면 현재 디렉토리의 폴더로 설정
+.. 두번쓰면 상위디렉토리로 가서 디렉토리 설정
+
+-- 수업내용--
+R의 제어문과 함수
+for문
+
