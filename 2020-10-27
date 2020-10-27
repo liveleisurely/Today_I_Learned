@@ -253,27 +253,3 @@ score = r2_score(y_test, y_pred)
 print('r2 score =', score)
 # r2 score = 0.8990757949048808
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
