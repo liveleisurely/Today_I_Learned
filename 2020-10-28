@@ -1,0 +1,156 @@
+### 2020-10-28
+1. 텍스트 파일을 원하는 파일 형식으로 처리하는 방법 익히기!
+2. 비지도학습 - 계층적 군집분석, kMeans 군집분석
+==================================================================
+Chap10_Cluster_Recomm_step01_Hierachical_cluster.py
+
+계층적 군집분석(Hierachical Cluster)
+ - 상향식으로 계층적 군집 형성
+ - 유클리드안 거리계산식 이용
+ - 숫자형 변수만 사용 : 계산식
+"""
+
+from sklearn.datasets import load_iris
+
+import pandas as pd # DataFrame
+from scipy.cluster.hierarchy import linkage, dendrogram # 군집분석
+import matplotlib.pyplot as plt # 시각화
+
+# 1. dataset load
+iris = load_iris()
+
+X = iris.data # x변수
+y = iris.target # y변수: 숫자
+print(type(X)) # <class 'numpy.ndarray'>
+
+# numpy -> pandas
+iris_df = pd.DataFrame(X, columns=iris.feature_names)
+print(iris_df.info())
+'''
+RangeIndex: 150 entries, 0 to 149
+Data columns (total 4 columns):
+ #   Column             Non-Null Count  Dtype  
+---  ------             --------------  -----  
+ 0   sepal length (cm)  150 non-null    float64
+ 1   sepal width (cm)   150 non-null    float64
+ 2   petal length (cm)  150 non-null    float64
+ 3   petal width (cm)   150 non-null    float64
+'''
+
+# target 추가
+target = pd.Series(y) # 1d
+
+iris_df['species'] = target
+
+print(iris_df.info())
+'''
+RangeIndex: 150 entries, 0 to 149
+Data columns (total 5 columns):
+ #   Column             Non-Null Count  Dtype  
+---  ------             --------------  -----  
+ 0   sepal length (cm)  150 non-null    float64
+ 1   sepal width (cm)   150 non-null    float64
+ 2   petal length (cm)  150 non-null    float64
+ 3   petal width (cm)   150 non-null    float64
+ 4   species            150 non-null    int32  
+ '''
+
+# 2. 계층적 군집분석
+clusters = linkage(y=iris_df, method='complete', metric='euclidean')
+'''
+method = 'complete' - 완전연결
+method = 'single' - 단일연결
+method = 'average' - 평균연결
+'''
+
+print(clusters)
+
+# 3. dendrogram 시각화: 계층적 군집분석 결과
+plt.figure(figsize=(25,10)) # 차트 공간
+dendrogram(clusters)
+plt.show() # 3개로 판별됨
+
+# 4. 클러스터링 자르기/평가
+from scipy.cluster.hierarchy import fcluster # 클러스터 자르기
+
+# 1) cluster 자르기 = 3
+cluster = fcluster(Z=clusters, t=3, criterion='distance') # cut 기준
+print(cluster)
+print(len(cluster))
+
+# 2) 칼럼 추가
+iris_df['cluster'] = cluster
+print(iris_df.head())
+print(iris_df.tail())
+
+# 3) 산점도 시각화
+plt.scatter(x=iris_df['sepal length (cm)'], y=iris_df['petal length (cm)'], c=iris_df['cluster'], )
+plt.show()
+
+# 4) 교차분할표: 예측치 vs 정답
+tab = pd.crosstab(index=iris_df['species'], columns=iris_df['cluster'])
+print(tab)
+'''
+cluster   1   2   3
+species            
+0        50   0   0
+1         0   0  50
+2         0  34  16
+
+정분류했다 오분류했다x -> 데이터의 패턴을 분석했더니 2번 특성, 3번 특성도 나온다 o
+'''
+
+# 각 군집에 대한 특성분석 : 그룹객체 생성
+print(iris_df.columns)
+'''
+['sepal length (cm)', 'sepal width (cm)', 'petal length (cm)',
+       'petal width (cm)', 'species', 'cluster']
+'''
+
+cluster_g = iris_df.groupby('cluster')
+print(cluster_g.size())
+'''
+cluster
+1    50
+2    34
+3    66
+'''
+
+print(cluster_g.mean())
+'''
+ sepal length (cm)  sepal width (cm)  ...  petal width (cm)   species
+cluster                                       ...                            
+1                 5.006000          3.428000  ...          0.246000  0.000000
+2                 6.888235          3.100000  ...          2.123529  2.000000
+3                 5.939394          2.754545  ...          1.445455  1.242424
+'''
+===================================================================
+Chap10_Cluster_Recomm_step02_kMeans.py
+
+# 1. dataset load
+file = open(file = 'c:/itwill/4_python-ii/data/testSet.txt')
+lines = file.readlines() # 전체 자료 줄단위 읽기
+print(lines, len(lines)) # 80
+
+# data 가공 - 텍스트 파일을 원하는 형식으로 처리하기
+dataset = [] # data save
+for line  in lines: # line = '1.658985\t4.285136\n'
+    cols = line.split('\t') # '1.658985', '4.285136\n'
+    
+    rows = [] # 1 행 원소 save
+    for col in cols: #  col = '1.658985'
+        rows.append(float(col)) # [1.658985, 4.285136]
+    
+    dataset.append(rows)
+    #[[1.658985, 4.285136], ... , []]
+
+print(dataset)
+
+# list -> numpy array: shape 활용 가능
+dataset = np.array(dataset)
+print(dataset.shape) # (80, 2)
+print(dataset)
+
+# 2. DataFrame
+dataDF = pd.DataFrame(dataset, columns=['x','y'])
+print(dataDF.info())
