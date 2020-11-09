@@ -1,0 +1,91 @@
+### Tensorboard 텐서플로 시각화 도구
+
+'''
+1.Tensorboard : Data Flow 시각화 도구
+2.사칙연산 함수
+    tf.add(x,y,name)
+    tf.subtract(x,y,name)
+    tf.multiply(x,y,name)
+    tf.div(x,y,name)
+    
+3. name_scope 이용 : 영역별 tensorboard 시각화
+ - model 생성 -> model 오차 -> model 평가
+
+conda activate python3.7
+tensorboard logdir =c itwill 5_tensorflow graph
+
+실행해야함
+
+"""
+
+import tensorflow.compat.v1 as tf # tensorflow1x
+tf.disable_v2_behavior() # ver 2.0 사용 안함
+
+# tensorboard 초기화 - 기존에 사용했던 것 tensorboard에서 지워줌
+tf.reset_default_graph()
+
+# 상수 정의
+x = tf.constant(1)
+y = tf.constant(2)
+
+# 식 정의 : 사칙연산 함수 적용
+
+# name: 한글, 공백, 특수문자 사용 불
+a = tf.add(x, y, name='a') # 3
+b = tf.subtract(x,y,name='b') # -1
+c = tf.multiply(20, 5, name='c') # 100
+d = tf.div(c, 2, name='d') # 50
+
+g = tf.add(b,c, name='g') 
+h = tf.multiply(g,d, name='h')
+
+sess = tf.Session()
+
+print('g =', sess.run(g)) # g = 99
+print('h =',sess.run(h)) # h = 4950
+sess.close() # 객체 닫기
+
+# with 키워드 이용
+with tf.Session() as sess:
+    print('h =', sess.run(h)) # h = 4950
+    # sess.close() 생략
+    
+    # graph 파일 생성
+    tf.summary.merge_all() # graph 모으는 역할
+    writer = tf.summary.FileWriter("c:/itwill/5_TensorFlow/graph", sess.graph)
+    
+    writer.close() # 객체 닫기
+
+
+# name_scope
+with tf.name_scope('regression_model') as scope :
+    # 회귀방정식
+    y_pred = (X * a) + b # 예측치
+
+with tf.name_scope('model_error') as scope:
+    # 오차 = 정답 - 예측치
+    model_err = y_pred - Y
+    
+with tf.name_scope('model_evalutation') as scope:
+    # 모델 평가 : MSE
+    square = tf.square(model_err)
+    mse = tf.reduce_mean(square)
+    
+with tf.Session() as sess:
+    tf.summary.merge_all() # graph 모으는 역할
+    writer = tf.summary.FileWriter("c:/itwill/5_TensorFlow/graph", sess.graph)
+    
+    writer.close() # 객체 닫기
+
+    print('y_pred =', sess.run(y_pred)) # 예측치 계산
+    print('model err =', sess.run(model_err)) # 오차 계산
+    print('MSE =', sess.run(mse)) # 모델 평가 계산
+    
+    '''
+    y_pred = 54.5
+    model err = -0.5
+    MSE = 0.25
+    '''
+    
+    
+
