@@ -2,3 +2,4 @@
 '\n' -> 새로운 라인 적용됨
 앞에 'r'을 붙이면 편하게 사용 가능
 ex) print(r'c:/download/newversion')
+ 
