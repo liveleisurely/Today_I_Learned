@@ -1,0 +1,56 @@
+# 자료를 논문에 들어가는 자료처럼 예쁘게 html로 출력하기, stargazer 이용
+## describe를 좀 더 자세한 내용 포함. psych 이용
+
+setwd('./1.data')
+getwd()
+install.packages('psych')
+install.packages('stargazer')
+
+library(psych)
+library(stargazer)
+ripple_daily = read.csv('ripple_daily.csv',header=TRUE)
+ripple_monthly = read.csv('ripple_monthly.csv', header=TRUE)
+ether_daily = read.csv('ether_daily.csv',header=TRUE)
+ether_monthly = read.csv('ether_monthly.csv', header=TRUE)
+
+print(ripple_monthly[c(2:57), Monthly_return])
+
+# mean=36.04
+rm = data.frame(describe(ripple_monthly$Monthly_return))
+rd = data.frame(describe(ripple_daily$Daily_return))
+em = data.frame(describe(ether_monthly$Monthly_return))
+ed = data.frame(describe(ether_daily$Daily_return))
+
+df = rbind(rd, rm, ed, em)
+rownames(df) = c('ripple_daily', 'ripple_monthly','ether_daily', 'ether_monthly')
+df
+print(df)
+View(df[,c(3,4,11,12)])
+
+a = stargazer(df, title="Summary Statistics", digits=2, type='html',out='test.html')
+setwd('./1.data')
+getwd()
+install.packages('psych')
+install.packages('stargazer')
+library(psych)
+library(stargazer)
+ripple_daily = read.csv('ripple_daily.csv',header=TRUE)
+ripple_monthly = read.csv('ripple_monthly.csv', header=TRUE)
+ether_daily = read.csv('ether_daily.csv',header=TRUE)
+ether_monthly = read.csv('ether_monthly.csv', header=TRUE)
+
+print(ripple_monthly[c(2:57), Monthly_return])
+
+# mean=36.04
+rm = data.frame(describe(ripple_monthly$Monthly_return))
+rd = data.frame(describe(ripple_daily$Daily_return))
+em = data.frame(describe(ether_monthly$Monthly_return))
+ed = data.frame(describe(ether_daily$Daily_return))
+
+df = rbind(rd, rm, ed, em)
+rownames(df) = c('ripple_daily', 'ripple_monthly','ether_daily', 'ether_monthly')
+df
+print(df)
+View(df[,c(3,4,11,12)])
+
+a = stargazer(df, title="Summary Statistics", digits=2, type='html',out='test.html')
