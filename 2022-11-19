@@ -1,0 +1,55 @@
+해쉬
+ 1. 전화번호 목록
+ 
+ def solution(phone_book):
+    answer = True
+    hash_map = {}
+    for phone_number in phone_book:
+        hash_map[phone_number] = 1
+    for phone_number in phone_book:
+        temp = ""
+        for number in phone_number:
+            temp += number
+            if temp in hash_map and temp != phone_number:
+                answer = False
+    return answer
+    
+  2. 위장 => n개 조합의 개수는 (1+a)(1+b)... => 다항식의 계수의 합-1 = 조합의 개수
+  
+  from collections import defaultdict
+  def solution(clothes):
+      dic = defaultdict(list)
+      res = 1
+      for item, key in clothes:
+          dic[key].append(item)
+      print(dic)
+      for key in dic.keys():
+          res *= len(dic[key]) + 1
+
+      res -= 1
+      return 
+ 
+  3.베스트앨범
+  
+from collections import defaultdict
+def solution(genres, plays): 
+    answer = []
+    
+    tmp = defaultdict(int)
+    tmp2 = defaultdict(list)
+    
+    for i, genre, play in zip(range(len(genres)),genres,plays):
+        tmp[genre] += play
+        tmp2[genre].append([i,play])
+    
+    tmp = sorted(tmp.items(), key=lambda x:x[1], reverse=True)
+    
+    print(tmp)
+    print(tmp2)
+    for key,val in tmp:
+        playtimes = sorted(tmp2[key], key=lambda x:x[1], reverse=True)
+        print(playtimes)
+    
+        for idx, play in playtimes[:2]:
+            answer.append(idx)
+    return answer
