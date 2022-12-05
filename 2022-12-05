@@ -1,0 +1,11 @@
+함수 내부 파악하는 함수
+
+def foo(a):
+    x = 2
+    return x + a
+
+import inspect
+
+inspect.getsource(foo)
+
+print(inspect.getsource(foo))
